@@ -88,7 +88,6 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
   direction: rtl;
 }
 
-/* تم زيادة عرض حاوية ومربعات إدخال الرقم السري لتصغير وتطويل الأشرطة حتى تلتقي مع خيار نسيت الرقم السري */
 .pins-container {
   display:flex;
   justify-content:space-between;
@@ -119,37 +118,40 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
   box-shadow: none !important;
 }
 
+/* تم ضبط المسافة العلوية وترقيق وزيادة عرض خط "نسيت الرقم السري؟" */
 .forgot-container {
   width: 100%;
   display: flex;
   justify-content: flex-start;
-  margin-top: 10px;
+  margin-top: 14px;
   direction: ltr;
   padding-left: 32px;
 }
 
 .lnk-forgot {
-  font-size: 11px;
-  color: #333;
+  font-size: 10px;
+  color: #222;
   text-decoration: underline;
   cursor: pointer;
   background: none;
   border: none;
   font-family: 'Cairo', sans-serif;
-  font-weight: 600;
+  font-weight: 400;
+  letter-spacing: 0.3px;
   display: inline-block;
   white-space: nowrap;
 }
 
 .lnk-md{
-  font-size:11px;
-  font-weight:700;
-  color:#333;
-  text-decoration:underline;
-  cursor:pointer;
-  background:none;
-  border:none;
-  font-family:'Cairo',sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  color: #222;
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: 'Cairo', sans-serif;
+  letter-spacing: 0.3px;
 }
 
 .spacer{flex:1;min-height:12px}
