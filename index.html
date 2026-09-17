@@ -25,7 +25,6 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
 
 .body{flex:1;overflow-y:auto;display:flex;flex-direction:column;padding:0 24px 16px;-webkit-overflow-scrolling:touch}
 
-/* تم رفع الشعار للأعلى بتقليل الهامش العلوي من 18px إلى 5px */
 .logo-box{display:flex;justify-content:center;margin:5px 0 25px}
 .logo-box img{width:232px;max-width:100%;object-fit:contain}
 
@@ -141,10 +140,10 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
 
 .spacer{flex:1;min-height:12px}
 
-/* تم إضافة هامش سفلي وقاعي لرفع الزر للأعلى بشكل مريح فوق شريط المتصفح */
+/* تم تغيير اللون إلى الأصفر الذهبي المشرق مع إضافة تأثير الإضاءة المضيئة */
 .btn{
   height:48px;
-  background:#F2C029;
+  background:#F5C22B;
   border:none;
   width:100%;
   font-family:'Cairo',sans-serif;
@@ -153,10 +152,11 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
   color:#fff;
   cursor:pointer;
   flex-shrink:0;
-  transition:opacity .15s;
+  transition:all .2s ease;
   margin-bottom: calc(15px + env(safe-area-inset-bottom));
+  box-shadow: 0 0 12px rgba(245, 194, 43, 0.6);
 }
-.btn:active{opacity:.85}
+.btn:active{opacity:.85; box-shadow: 0 0 6px rgba(245, 194, 43, 0.4);}
 
 .screen{display:flex;flex-direction:column;height:100%}
 .hide{display:none!important}
