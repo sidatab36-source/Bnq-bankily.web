@@ -21,16 +21,17 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
 #app{width:100%;height:100%;display:flex;justify-content:center;position:relative}
 .phone{width:100%;max-width:430px;height:100%;background:#fff;display:flex;flex-direction:column;overflow:hidden;position:relative;justify-content:space-between;}
 
-.hdr{background:#fff;height:15px;flex-shrink:0;display:flex;align-items:center;padding:0 14px;position:relative}
+.hdr{background:#fff;height:5px;flex-shrink:0;display:flex;align-items:center;padding:0 14px;position:relative}
 
 .body{flex:1;display:flex;flex-direction:column;padding:0 24px;justify-content:flex-start;overflow:hidden;}
 
-.logo-box{display:flex;justify-content:center;margin:15px 0 25px}
-.logo-box img{width:240px;max-width:100%;object-fit:contain}
+/* تكبير الشعار في الطول والعرض لملء الفراغ العلوي */
+.logo-box{display:flex;justify-content:center;margin:5px 0 15px}
+.logo-box img{width:320px;max-width:100%;height:auto;object-fit:contain}
 
 .field{margin-bottom:12px;position:relative;}
-.field-phone{margin-top:15px; margin-bottom:20px; position:relative;}
-.field-pin{margin-top:20px; margin-bottom:15px; position:relative;}
+.field-phone{margin-top:10px; margin-bottom:18px; position:relative;}
+.field-pin{margin-top:18px; margin-bottom:12px; position:relative;}
 
 .lbl{
   font-size: 13.5px;
@@ -156,7 +157,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
   letter-spacing: 0.3px;
 }
 
-.spacer{flex:1;min-height:10px}
+.spacer{flex:1;min-height:5px}
 
 .btn{
   height:52px;
@@ -348,7 +349,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
       </div>
 
       <div class="spacer"></div>
-      <div style="text-align:center; margin-top: 20px; margin-bottom: 20px;">
+      <div style="text-align:center; margin-top: 15px; margin-bottom: 10px;">
         <button class="lnk-md" onclick="void(0)">مستخدم جديد؟ سجل الآن!</button>
       </div>
     </div>
