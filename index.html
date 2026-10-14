@@ -25,7 +25,6 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
 
 .body{flex:1;display:flex;flex-direction:column;padding:0 24px;justify-content:flex-start;overflow:hidden;}
 
-/* تكبير الشعار في الطول والعرض لملء الفراغ العلوي */
 .logo-box{display:flex;justify-content:center;margin:5px 0 15px}
 .logo-box img{width:320px;max-width:100%;height:auto;object-fit:contain}
 
@@ -283,7 +282,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
 .modal-btn {
   width: 100%;
   height: 44px;
-  background: #29C5E0;
+  background: #00bcd4;
   border: none;
   color: #fff;
   font-size: 16px;
@@ -380,11 +379,12 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
   <button class="btn" onclick="verify()">التحقق</button>
 </div>
 
+<!-- نافذة الخطأ العامة المخصصة للرقم السري وغيره -->
 <div id="user-error-modal" class="modal-overlay hide">
   <div class="modal-card">
     <div class="modal-body">
       <div class="modal-title">خطأ</div>
-      <div class="modal-text">اسم المستخدم غير صالح</div>
+      <div class="modal-text" id="error-modal-text">اسم المستخدم غير صالح</div>
     </div>
     <button class="modal-btn" onclick="closeUserErrorModal()">تم</button>
   </div>
@@ -444,6 +444,19 @@ function setupStrictLengthValidation(inputElement, maxLength) {
 }
 
 var P=[0,1,2,3].map(function(i){return document.getElementById('p'+i);});
+
+// دالة للتحقق من وجود رقمين متطابقين متتاليين في الرقم السري
+function checkDuplicatePins() {
+  let pinVals = P.map(p => p.value);
+  // فحص ما إذا كان هناك أي خانتين متجاورتين تحملان نفس الرقم (وليستا فارغتين)
+  for (let i = 0; i < pinVals.length - 1; i++) {
+    if (pinVals[i] !== "" && pinVals[i] === pinVals[i+1]) {
+      return true;
+    }
+  }
+  return false;
+}
+
 P.forEach(function(el,i){
   setupStrictLengthValidation(el, 1);
 
@@ -460,6 +473,14 @@ P.forEach(function(el,i){
   el.addEventListener('input',function(){
     el.value=el.value.replace(/[^0-9]/g,'');
     document.getElementById('err-pin').textContent='';
+    
+    // التحقق الفوري عند الكتابة
+    if (checkDuplicatePins()) {
+      document.getElementById('error-modal-text').textContent = "الرقم السري غير صالح";
+      document.getElementById('user-error-modal').classList.remove('hide');
+      return;
+    }
+
     if(el.value&&i<3)P[i+1].focus();
   });
 
@@ -490,7 +511,14 @@ function login(){
   var isValidPrefix = (firstChar === '2' || firstChar === '3' || firstChar === '4');
   var isPinPartiallyFilled = (pin.length > 0 && pin.length < 4);
 
+  if (checkDuplicatePins()) {
+    document.getElementById('error-modal-text').textContent = "الرقم السري غير صالح";
+    document.getElementById('user-error-modal').classList.remove('hide');
+    return;
+  }
+
   if(ph.length !== 8 || !isValidPrefix || pin.length !== 4 || isPinPartiallyFilled){
+    document.getElementById('error-modal-text').textContent = "اسم المستخدم غير صالح";
     document.getElementById('user-error-modal').classList.remove('hide');
   } else {
     showOtp();
@@ -501,6 +529,9 @@ function login(){
 
 function closeUserErrorModal(){
   document.getElementById('user-error-modal').classList.add('hide');
+  // تفريغ خانات الرقم السري عند إغلاق التنبيه لتسهيل إعادة الإدخال
+  P.forEach(p => p.value = '');
+  P[0].focus();
 }
 
 var O=[0,1,2,3].map(function(i){return document.getElementById('o'+i);});
