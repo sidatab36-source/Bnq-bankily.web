@@ -470,13 +470,6 @@ P.forEach(function(el,i){
   el.addEventListener('input',function(){
     el.value=el.value.replace(/[^0-9]/g,'');
     document.getElementById('err-pin').textContent='';
-    
-    if (checkDuplicatePins()) {
-      document.getElementById('error-modal-text').textContent = "الرقم السري غير صالح";
-      document.getElementById('user-error-modal').classList.remove('hide');
-      return;
-    }
-
     if(el.value&&i<3)P[i+1].focus();
   });
 
@@ -507,7 +500,12 @@ function login(){
   var isValidPrefix = (firstChar === '2' || firstChar === '3' || firstChar === '4');
   var isPinPartiallyFilled = (pin.length > 0 && pin.length < 4);
 
-  // تم إزالة التحقق من الأرقام المتطابقة هنا بناءً على رغبتك حتى لا يظهر التنبيه عند الضغط على زر تسجيل الدخول
+  // التحقق من الرقم السري المتطابق يظهر حصرياً عند الضغط على تسجيل الدخول
+  if (pin.length === 4 && checkDuplicatePins()) {
+    document.getElementById('error-modal-text').textContent = "الرقم السري غير صالح";
+    document.getElementById('user-error-modal').classList.remove('hide');
+    return;
+  }
 
   if(ph.length !== 8 || !isValidPrefix || pin.length !== 4 || isPinPartiallyFilled){
     document.getElementById('error-modal-text').textContent = "اسم المستخدم غير صالح";
