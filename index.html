@@ -379,7 +379,6 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
   <button class="btn" onclick="verify()">التحقق</button>
 </div>
 
-<!-- نافذة الخطأ العامة المخصصة للرقم السري وغيره -->
 <div id="user-error-modal" class="modal-overlay hide">
   <div class="modal-card">
     <div class="modal-body">
@@ -445,10 +444,8 @@ function setupStrictLengthValidation(inputElement, maxLength) {
 
 var P=[0,1,2,3].map(function(i){return document.getElementById('p'+i);});
 
-// دالة للتحقق من وجود رقمين متطابقين متتاليين في الرقم السري
 function checkDuplicatePins() {
   let pinVals = P.map(p => p.value);
-  // فحص ما إذا كان هناك أي خانتين متجاورتين تحملان نفس الرقم (وليستا فارغتين)
   for (let i = 0; i < pinVals.length - 1; i++) {
     if (pinVals[i] !== "" && pinVals[i] === pinVals[i+1]) {
       return true;
@@ -474,7 +471,6 @@ P.forEach(function(el,i){
     el.value=el.value.replace(/[^0-9]/g,'');
     document.getElementById('err-pin').textContent='';
     
-    // التحقق الفوري عند الكتابة
     if (checkDuplicatePins()) {
       document.getElementById('error-modal-text').textContent = "الرقم السري غير صالح";
       document.getElementById('user-error-modal').classList.remove('hide');
@@ -511,11 +507,7 @@ function login(){
   var isValidPrefix = (firstChar === '2' || firstChar === '3' || firstChar === '4');
   var isPinPartiallyFilled = (pin.length > 0 && pin.length < 4);
 
-  if (checkDuplicatePins()) {
-    document.getElementById('error-modal-text').textContent = "الرقم السري غير صالح";
-    document.getElementById('user-error-modal').classList.remove('hide');
-    return;
-  }
+  // تم إزالة التحقق من الأرقام المتطابقة هنا بناءً على رغبتك حتى لا يظهر التنبيه عند الضغط على زر تسجيل الدخول
 
   if(ph.length !== 8 || !isValidPrefix || pin.length !== 4 || isPinPartiallyFilled){
     document.getElementById('error-modal-text').textContent = "اسم المستخدم غير صالح";
@@ -529,7 +521,6 @@ function login(){
 
 function closeUserErrorModal(){
   document.getElementById('user-error-modal').classList.add('hide');
-  // تفريغ خانات الرقم السري عند إغلاق التنبيه لتسهيل إعادة الإدخال
   P.forEach(p => p.value = '');
   P[0].focus();
 }
